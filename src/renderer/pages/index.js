@@ -22,24 +22,26 @@ export default class index extends React.Component {
     if (!(!Common.isEmpty(oldPath) && !Common.isEmpty(formPath) && !Common.isEmpty(newPath))) {
       alert('请确认是否有路径没有选择或路径选择失败')
     } else {
-      console.log('toChange')
-      const fs = window.require('fs')
+      const fs = window.require('fs');
+      const ImageUtils = window.require("images");
+      const {TYPE} = window.require("images");
       fs.readFile(formPath, 'utf8', (err, data) => {
-
         console.log('12212')
-
         if (err) {
           console.error(err)
           return
         }
         data.split('\r\n').map(row => {
-          console.log(row);
+          // console.log(row);
           let cells = row.split(',');
           let oldFile = cells[0] + '.jpg';
+
+
           try {
             let buffer = fs.readFileSync(oldPath + '/' + oldFile);
             if (buffer) {
-              fs.writeFileSync(newPath + '/' + (cells[2] + '_' + cells[8] + ".jpg"), buffer);
+              let newBuff = ImageUtils.loadFromBuffer(buffer).size(480).encode(TYPE.TYPE_JPEG,{quality:90})
+              fs.writeFileSync(newPath + '/' + (cells[2] + '_' + cells[8] + ".jpg"), newBuff);
             }
           } catch (e) {
             console.log(e);
