@@ -1,0 +1,98 @@
+{
+  "name": "file-name-changer",
+  "version": "0.0.2",
+  "description": "an api builder tools",
+  "main": "./dist/main/main.js",
+  "private": true,
+  "build": {
+    "files": [
+      "dist/",
+      "node_modules/",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.tools",
+      "icon": "app/icon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "app/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    },
+    "directories": {
+      "output": "release"
+    },
+    "productName": "file-name-changer",
+    "appId": "com.kelap365.api-builder",
+    "asar": false,
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "copyright": "copyright © 2018 杭州科牌信息技术有限公司"
+  },
+  "scripts": {
+    "start": "concurrently \"yarn start:main\" \"yarn start:renderer\"",
+    "start:main": "electron-webpack dev",
+    "start:renderer": "BROWSER=none APP_ROOT=src/renderer umi dev",
+    "build-main-prod": "NODE_ENV=production webpack --config ./build/webpack.main.prod.config.js",
+    "build-main-dev": "NODE_ENV=development webpack --config ./build/webpack.main.config.js",
+    "build:renderer": "APP_ROOT=src/renderer umi build",
+    "watch": "tsc -w",
+    "debug:main": "electron --inspect=5858 -w ./dist/main/main.js",
+    "pack": "npm run build:renderer && npm run build-main-prod && electron-builder --dir",
+    "dist": "electron-builder",
+    "dist-mac": "electron-builder -m",
+    "dist-win": "electron-builder -w",
+    "dist-linux": "electron-builder -l",
+    "dist-all": "electron-builder -mwl",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [
+    "api",
+    "auto"
+  ],
+  "author": {
+    "name": "kepai365",
+    "email": "hzkepai@163.com"
+  },
+  "devDependencies": {
+    "electron": "8.0.1",
+    "electron-builder": "^22.3.2",
+    "electron-debug": "3.0.1",
+    "electron-webpack": "2.7.4",
+    "umi": "2.13.3",
+    "umi-plugin-react": "1.15.2",
+    "webpack": "4.41.6",
+    "webpack-cli": "3.3.11",
+    "webpack-merge": "^4.2.2",
+    "antd": "4.0.1",
+    "dva": "latest",
+    "qs": "latest",
+    "react": "16.12.0",
+    "react-dom": "16.12.0",
+    "react-markdown": "4.3.1",
+    "umi-request": "1.2.19",
+    "nedb": "1.8.0",
+    "moment": "^2.24.0",
+    "react-json-tree": "0.11.2",
+    "copy-to-clipboard": "^3.0.8"
+  },
+  "electronWebpack": {
+    "main": {
+      "sourceDirectory": "src/main"
+    },
+    "renderer": {
+      "sourceDirectory": null
+    }
+  },
+  "__npminstall_done": false,
+  "dependencies": {
+    "@babel/compat-data": "^7.11.0",
+    "archiver": "^5.0.2",
+    "canvas": "^2.6.1",
+    "cnpm": "^6.1.1",
+    "glob": "^7.1.6"
+  }
+}
