@@ -35,12 +35,10 @@ export default class index extends React.Component {
           // console.log(row);
           let cells = row.split(',');
           let oldFile = cells[0] + '.jpg';
-
-
           try {
             let buffer = fs.readFileSync(oldPath + '/' + oldFile);
             if (buffer) {
-              let newBuff = ImageUtils.loadFromBuffer(buffer).size(480).encode(TYPE.TYPE_JPEG,{quality:90})
+              let newBuff = ImageUtils(buffer).resize(480).encode("jpg", {operation:100});
               fs.writeFileSync(newPath + '/' + (cells[2] + '_' + cells[8] + ".jpg"), newBuff);
             }
           } catch (e) {
