@@ -1,6 +1,6 @@
 import React from 'react';
 import Common from "@/utils/Common";
-import {Button} from "antd";
+import {Button, Radio} from "antd";
 import Flex from "@/components/Flex";
 
 export default class index extends React.Component {
@@ -12,15 +12,18 @@ export default class index extends React.Component {
       oldPath: '',
       formPath: '',
       newPath: '',
+      type: '', //1 热人员编号，2 卡号
     }
 
   }
 
 
   confirm() {
-    const {oldPath, formPath, newPath} = this.state;
+    const {oldPath, formPath, newPath, type} = this.state;
     if (!(!Common.isEmpty(oldPath) && !Common.isEmpty(formPath) && !Common.isEmpty(newPath))) {
-      alert('请确认是否有路径没有选择或路径选择失败')
+      alert('请确认是否有路径没有选择或路径选择失败');
+    } else if (Common.isEmpty(type)) {
+      alert('请选择图片转换格式');
     } else {
       const fs = window.require('fs');
       const ImageUtils = window.require("images");
@@ -34,12 +37,16 @@ export default class index extends React.Component {
           // console.log(row);
           let cells = row.split(',');
 
-
-          let oldFile = cells[0] + '.jpg';
+          let oldFile;
+          if (type == '1') {
+            oldFile = cells[0] + '.jpg';
+          } else {
+            oldFile = cells[8] + '.jpg';
+          }
           try {
             let buffer = fs.readFileSync(oldPath + '/' + oldFile);
             if (buffer) {
-              let newBuff = ImageUtils(buffer).resize(480).encode("jpg", {operation:100});
+              let newBuff = ImageUtils(buffer).resize(480).encode("jpg", {operation: 100});
               fs.writeFileSync(newPath + '/' + (cells[2] + '_' + cells[8] + ".jpg"), newBuff);
             }
           } catch (e) {
@@ -100,21 +107,38 @@ export default class index extends React.Component {
         <h1>格式化图片名称</h1>
         <form>
 
-          <div style={{padding: 16, margin: 16}}>
-            <div style={{margin: '16px 0'}}>原始图片路径：</div>
+          <Flex style={{padding: 16, margin: 16}}>
+
+            <Flex direction={"column"}>
+            <Flex style={{margin: '12px 0'}}>原始图片路径：</Flex>
             <Flex style={{
-              cursor: 'pointer',
+              cursor: 'pointer',height:36,
               padding: '8px 16px', width: '120px', backgroundColor: "#2188ff", color: "white",
               borderRadius: "6px"
             }} justify={"center"} alignItems={"center"}
                   onClick={() => this.openDialog('1')}>
               {this.renderBtn('1')}
             </Flex>
-          </div>
+            </Flex>
+
+
+
+
+
+            <Flex style={{marginLeft:64}} direction={"column"}>
+              <Flex style={{margin: '12px 0'}}>图片格式名称：</Flex>
+              <Radio.Group style={{marginTop:6}} onChange={e => this.setState({type: e.target.value})}>
+                <Radio value={'1'}>人员编号...jpg</Radio>
+                <Radio value={'2'}>卡号...jpg</Radio>
+              </Radio.Group>
+            </Flex>
+
+
+          </Flex>
 
 
           <div style={{padding: 16, margin: 16}}>
-            <div style={{margin: '16px 0'}}>excel文件路径：</div>
+            <div style={{margin: '12px 0'}}>excel文件路径：</div>
             <Flex style={{
               cursor: 'pointer',
               padding: '8px 16px', width: '120px', backgroundColor: "#2188ff", color: "white",
@@ -127,7 +151,7 @@ export default class index extends React.Component {
           </div>
 
           <div style={{padding: 16, margin: 16}}>
-            <div style={{margin: '16px 0'}}>转换后图片保存路径：</div>
+            <div style={{margin: '12px 0'}}>转换后图片保存路径：</div>
             <Flex style={{
               cursor: 'pointer',
               padding: '8px 16px', width: '120px', backgroundColor: "#2188ff", color: "white",
@@ -138,6 +162,11 @@ export default class index extends React.Component {
               {this.renderBtn('3')}
             </Flex>
           </div>
+
+
+
+
+
           <Button onClick={() => this.confirm()} style={{marginLeft: 32, marginTop: 16}}>
             确认
           </Button>
