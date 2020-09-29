@@ -24,7 +24,6 @@ export default class index extends React.Component {
     } else {
       const fs = window.require('fs');
       const ImageUtils = window.require("images");
-      const {TYPE} = window.require("images");
       fs.readFile(formPath, 'utf8', (err, data) => {
         console.log('12212')
         if (err) {
@@ -34,6 +33,8 @@ export default class index extends React.Component {
         data.split('\r\n').map(row => {
           // console.log(row);
           let cells = row.split(',');
+
+
           let oldFile = cells[0] + '.jpg';
           try {
             let buffer = fs.readFileSync(oldPath + '/' + oldFile);
